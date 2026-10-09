@@ -16,7 +16,8 @@ situacao_var = ctk.StringVar(value="Verificando...")
 
 porta_arduino = "COM3"
 baud_rate = 9600
-TAGS = ["1233212323313"]
+TAGS = {"05 65 B0 E3 64 03 E9",
+        "C4 72 CD CF"}
 
 def iniciar_banco():
     conexao = sqlite3.connect('database_iot.db')
@@ -35,7 +36,7 @@ def iniciar_banco():
 def loop_leitura_rfid():
     iniciar_banco()
     arduino = None
-    
+    tags_validas = {tag.strip().upper() for tag in TAGS}
     while True:
         if arduino is None:
             try:
@@ -50,7 +51,8 @@ def loop_leitura_rfid():
 
         try:
             if arduino.in_waiting > 0:
-                dados_lidos = arduino.readline().decode('utf-8').strip()
+                raw_bytes = arduino.readline()
+                dados_lidos = raw_bytes.decode('utf-8', errors='ignore').strip().upper()
                 if dados_lidos:
                     agora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     
