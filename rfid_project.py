@@ -19,9 +19,9 @@ situacao_var = ctk.StringVar(value="Verificando...")
 porta_arduino = "COM3"
 baud_rate = 9600
 TAGS = {"05 65 B0 E3 64 03 E9",
-        "C4 72 CD CF"}
+        "33 4D 33 AD"}
 
-def iniciar_banco():
+def iniciar_banco():    
     conexao = sqlite3.connect('database_iot.db')
     cursor = conexao.cursor()
     cursor.execute("""
@@ -64,10 +64,10 @@ def loop_leitura_rfid():
                     agora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     
                     if dados_lidos in TAGS:
-                        acesso = "ACESSO RECUSADO"
+                        acesso = "ACESSO LIBERADO"
                         arduino.write(b'1')
                     else:
-                        acesso = "ACESSO LIBERADO"
+                        acesso = "ACESSO RECUSADO"
                         arduino.write(b'0')
 
                     conexao = sqlite3.connect('database_iot.db')
@@ -136,20 +136,39 @@ def tela_login():
     registros = ctk.CTkFrame(janela, fg_color="#262a35", corner_radius=25, bg_color="#0f1123")
     registros.place(relx=0.56, rely=0.75, relwidth=0.52, relheight=0.4, anchor="center")
 
-    acess_label = ctk.CTkLabel(janela, text ="", bg_color="#5ed97c", text_color="black")
-    acess_label.place(relx=0.69, rely=0.2, anchor="center")
+    acess_label = ctk.CTkLabel(janela, text ="", bg_color="#5ed97c", text_color="black", font=("arial",22))
+    acess_label.place(relx=0.455, rely=0.455, anchor="center")
+
+    acess_status_label = ctk.CTkLabel(janela,text="", bg_color="#5ed97c", text_color="black", font=("arial",45,"bold"))
+    acess_status_label.place(relx=0.56, rely=0.30, anchor="center")
+
+    acess_hour = ctk.CTkLabel(janela,text="", bg_color="#5ed97c", text_color="black", font=("arial",22))
+    acess_hour.place(relx=0.71, rely=0.455, anchor="center")
+
     def atualizar_rfid():
         with sqlite3.connect("database_iot.db") as conexao:
             cursor = conexao.cursor()
-            cursor.execute("SELECT * FROM registros ORDER BY id DESC LIMIT 1;")
+            cursor.execute("SELECT uid,acesso,data_hora FROM registros ORDER BY id DESC LIMIT 1;")
             ultimo = cursor.fetchone()
 
         if ultimo:
-            acess_label.configure(text=str(ultimo))
-
+            acess_label.configure(text=str(f"UID do cartão: {ultimo[0]}"))
+            acess_status_label.configure(text=str(f"{ultimo[1]}"))
+            acess_hour.configure(text=str(f"{ultimo[2]}"))
+        if ultimo[1] == "ACESSO RECUSADO":
+            screen.configure(fg_color="#d34545")
+            acess_label.configure(bg_color="#d34545")
+            acess_status_label.configure(bg_color="#d34545")
+            acess_hour.configure(bg_color="#d34545")
+        if ultimo[1] == "ACESSO LIBERADO":
+            screen.configure(fg_color="#64db66")
+            acess_label.configure(bg_color="#64db66")
+            acess_status_label.configure(bg_color="#64db66")
+            acess_hour.configure(bg_color="#64db66")
         janela.after(1000, atualizar_rfid)
-    
     atualizar_rfid()
+
+#-------------------------------------------------------------------
 def tela_historico():
     for elemento in janela.winfo_children():
         elemento.destroy()
