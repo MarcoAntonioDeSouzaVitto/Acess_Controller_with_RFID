@@ -4,7 +4,9 @@ import serial
 import time
 import customtkinter as ctk
 import threading
-
+import os
+#banco = "database_iot.db"
+#os.remove(banco)
 ctk.set_appearance_mode("dark")
 janela = ctk.CTk()
 janela.geometry("1200x800")
@@ -34,9 +36,14 @@ def iniciar_banco():
     conexao.close()
 
 def loop_leitura_rfid():
+    global registro_primeiro
     iniciar_banco()
     arduino = None
     tags_validas = {tag.strip().upper() for tag in TAGS}
+    conexao = sqlite3.connect("database_iot.db")
+    cursor = conexao.cursor()
+    cursor.execute("SELECT * FROM registros ORDER BY id DESC LIMIT 1;")
+    registro_primeiro = cursor.fetchone()
     while True:
         if arduino is None:
             try:
@@ -57,10 +64,10 @@ def loop_leitura_rfid():
                     agora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     
                     if dados_lidos in TAGS:
-                        acesso = "ACESSO LIBERADO"
+                        acesso = "ACESSO RECUSADO"
                         arduino.write(b'1')
                     else:
-                        acesso = "ACESSO RECUSADO"
+                        acesso = "ACESSO LIBERADO"
                         arduino.write(b'0')
 
                     conexao = sqlite3.connect('database_iot.db')
@@ -85,17 +92,18 @@ def loop_leitura_rfid():
 thread_rfid = threading.Thread(target=loop_leitura_rfid, daemon=True)
 thread_rfid.start()
 
-
-
+    
 
 # ---------------------- Interface Gráfica ----------------------
 
 def tela_login():
+    global registro_primeiro
     for elemento in janela.winfo_children():
         elemento.destroy()
 
     frame_menu = ctk.CTkFrame(janela, fg_color="#1c1f28")
     frame_menu.place(relx=0.05, rely=0.5, relwidth=0.16, relheight=1, anchor="center")
+
 
     ctk.CTkLabel(janela, text="Painel de Monitoramento", font=("Arial", 24, "bold"), bg_color="#0f1123").place(relx=0.56, rely=0.045, anchor="center")
 
@@ -123,11 +131,25 @@ def tela_login():
     atualizar_cor_status()
 
     screen = ctk.CTkFrame(janela, fg_color="#5ed97c", corner_radius=25, bg_color="#0f1123")
-    screen.place(relx=0.56, rely=0.34, relwidth=0.5, relheight=0.35, anchor="center")
+    screen.place(relx=0.56, rely=0.34, relwidth=0.52, relheight=0.32, anchor="center")
 
     registros = ctk.CTkFrame(janela, fg_color="#262a35", corner_radius=25, bg_color="#0f1123")
-    registros.place(relx=0.56, rely=0.75, relwidth=0.48, relheight=0.4, anchor="center")
+    registros.place(relx=0.56, rely=0.75, relwidth=0.52, relheight=0.4, anchor="center")
 
+    acess_label = ctk.CTkLabel(janela, text ="", bg_color="#5ed97c", text_color="black")
+    acess_label.place(relx=0.69, rely=0.2, anchor="center")
+    def atualizar_rfid():
+        with sqlite3.connect("database_iot.db") as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("SELECT * FROM registros ORDER BY id DESC LIMIT 1;")
+            ultimo = cursor.fetchone()
+
+        if ultimo:
+            acess_label.configure(text=str(ultimo))
+
+        janela.after(1000, atualizar_rfid)
+    
+    atualizar_rfid()
 def tela_historico():
     for elemento in janela.winfo_children():
         elemento.destroy()
