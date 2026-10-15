@@ -133,8 +133,14 @@ def tela_login():
     screen = ctk.CTkFrame(janela, fg_color="#5ed97c", corner_radius=25, bg_color="#0f1123")
     screen.place(relx=0.56, rely=0.34, relwidth=0.52, relheight=0.32, anchor="center")
 
-    registros = ctk.CTkFrame(janela, fg_color="#262a35", corner_radius=25, bg_color="#0f1123")
-    registros.place(relx=0.56, rely=0.75, relwidth=0.52, relheight=0.4, anchor="center")
+    registros = ctk.CTkFrame(janela, fg_color="#1b1e27", corner_radius=25, bg_color="#0f1123")
+    registros.place(relx=0.56, rely=0.75, relwidth=0.52, relheight=0.36, anchor="center")
+
+    frame_registro = ctk.CTkFrame(janela, fg_color="#262a35", bg_color="#0f1123")
+    frame_registro.place(relx=0.56, rely=0.585, relwidth=0.52, relheight=0.07, anchor="center")
+
+    texto_registros = ctk.CTkLabel(janela,text="UID                  Status                      Tempo",font=("Arial", 24),bg_color="#262a35")
+    texto_registros.place(relx=0.555, rely=0.585, anchor="center")
 
     acess_label = ctk.CTkLabel(janela, text ="", bg_color="#5ed97c", text_color="black", font=("arial",22))
     acess_label.place(relx=0.455, rely=0.455, anchor="center")
@@ -144,6 +150,24 @@ def tela_login():
 
     acess_hour = ctk.CTkLabel(janela,text="", bg_color="#5ed97c", text_color="black", font=("arial",22))
     acess_hour.place(relx=0.71, rely=0.455, anchor="center")
+
+    table_acess = ctk.CTkLabel(janela,text="", bg_color="#1b1e27", text_color="white", font=("Consolas",20), justify="left")
+    table_acess.place(relx=0.56, rely=0.775, anchor="center")
+
+    frame_div1 = ctk.CTkFrame(janela, bg_color="#2c2f3a")
+    frame_div1.place(relx=0.44, rely=0.762, relwidth=0.001, relheight=0.334, anchor="center")
+    frame_div2 = ctk.CTkFrame(janela, bg_color="#2c2f3a")
+    frame_div2.place(relx=0.6125, rely=0.762, relwidth=0.001, relheight=0.334, anchor="center")
+
+    frame_div1h = ctk.CTkFrame(janela, bg_color="#2c2f3a")
+    frame_div1h.place(relx=0.5599, rely=0.69, relwidth=0.52, relheight=0.001, anchor="center")
+    frame_div2h = ctk.CTkFrame(janela, bg_color="#2c2f3a")
+    frame_div2h.place(relx=0.5599, rely=0.75, relwidth=0.52, relheight=0.001, anchor="center")
+    frame_div3h = ctk.CTkFrame(janela, bg_color="#2c2f3a")
+    frame_div3h.place(relx=0.5599, rely=0.807, relwidth=0.52, relheight=0.001, anchor="center")
+    frame_div4h = ctk.CTkFrame(janela, bg_color="#2c2f3a")
+    frame_div4h.place(relx=0.5599, rely=0.864, relwidth=0.52, relheight=0.001, anchor="center")
+
 
     def atualizar_rfid():
         with sqlite3.connect("database_iot.db") as conexao:
@@ -155,6 +179,7 @@ def tela_login():
             acess_label.configure(text=str(f"UID do cartão: {ultimo[0]}"))
             acess_status_label.configure(text=str(f"{ultimo[1]}"))
             acess_hour.configure(text=str(f"{ultimo[2]}"))
+
         if ultimo[1] == "ACESSO RECUSADO":
             screen.configure(fg_color="#d34545")
             acess_label.configure(bg_color="#d34545")
@@ -166,7 +191,20 @@ def tela_login():
             acess_status_label.configure(bg_color="#64db66")
             acess_hour.configure(bg_color="#64db66")
         janela.after(1000, atualizar_rfid)
+
+    def atualizar_tabela():
+        with sqlite3.connect("database_iot.db") as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("SELECT uid,acesso,data_hora FROM registros ORDER BY id DESC LIMIT 5;")
+            funcio = cursor.fetchall()
+        if funcio:
+            texto = ""
+            for linha in funcio:
+                texto += f"{str(linha[0]):<12}   {str(linha[1]):<11}   {str(linha[2]):<19}\n\n"
+            table_acess.configure(text=texto.strip())
+        janela.after(1000, atualizar_tabela)    
     atualizar_rfid()
+    atualizar_tabela()
 
 #-------------------------------------------------------------------
 def tela_historico():
