@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial</title>
+    <style>
+        body {
+            background-color: #1e1e2e;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            
+            background-color: #2b2b2b;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        a {
+            color: #1f6aa5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        h1{
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="boas-vindas">
+        <h1>Bem-vindo ao Sistema! 🎉</h1>
+    </div>
+
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                var card = document.getElementById("boas-vindas");
+                card.style.opacity = "0";
+
+                setTimeout(function() {
+                    card.style.display = "none";
+                }, 500);
+            }, 2000);
+        };
+    </script>
+</body>
+</html>
