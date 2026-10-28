@@ -22,7 +22,7 @@ def main(page: ft.Page):
             "Ultimos Acessos",
             size=15,
             weight="bold",
-            color="#f0f0fc",
+            color="#dedee7",
         )
 
         t_uid = ft.Text(
@@ -31,7 +31,7 @@ def main(page: ft.Page):
             text_align=ft.TextAlign.CENTER,
             size=14,
             weight="bold",
-            color="#f0f0fc",
+            color="#dedee7",
         )
         t_status = ft.Text(
             "Status",
@@ -39,7 +39,7 @@ def main(page: ft.Page):
             text_align=ft.TextAlign.CENTER,
             size=14,
             weight="bold",
-            color="#f0f0fc",
+            color="#dedee7",
         )
         t_dth = ft.Text(
             "Data Hora",
@@ -47,7 +47,7 @@ def main(page: ft.Page):
             text_align=ft.TextAlign.CENTER,
             size=14,
             weight="bold",
-            color="#f0f0fc",
+            color="#dedee7",
         )
 
         title_painel = ft.Container(
@@ -66,24 +66,26 @@ def main(page: ft.Page):
                 alignment=ft.MainAxisAlignment.SPACE_AROUND,
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            bgcolor="#0E0E55",
+            bgcolor="#263A6D",
             border_radius=3,
             padding=3,
         )
-        ft.Container(height=50)
+        ft.Container(height=60)
         btn_liberar = ft.Container (
             ft.ElevatedButton(
                 text="Liberar acesso",
                 icon=ft.icons.LOCK_OPEN_SHARP,
                 style=ft.ButtonStyle(
-                    side=ft.BorderSide(width=1, color="#b1b1c0"),
-                    shape=ft.RoundedRectangleBorder(radius=5)
+                    side=ft.BorderSide(width=1, color="#CCCFD8"),
+                    shape=ft.RoundedRectangleBorder(radius=5),
+                    
                 ),
-                bgcolor="#f0f0fc",
-                color="#5ed97c"
+                width=310,
+                height=50,
+                bgcolor="#e5e5f0",
+                color="#529d65",
             ),
-            padding=10,
-            alignment=ft.alignment.center
+            alignment=ft.alignment.center,
         )
         btn_voltar = ft.Row(
             controls=[
@@ -113,14 +115,14 @@ def main(page: ft.Page):
                 ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Text(uid, color="#f0f0fc", expand=1, size=12, text_align=ft.TextAlign.CENTER),
+                            ft.Text(uid, color="#dedee7", expand=1, size=12, text_align=ft.TextAlign.CENTER),
                             ft.Text(status, color=cor_status, expand=2, size=13, text_align=ft.TextAlign.CENTER),
-                            ft.Text(dth, color="#f0f0fc", expand=1, size=13, text_align=ft.TextAlign.CENTER),
+                            ft.Text(dth, color="#dedee7", expand=1, size=13, text_align=ft.TextAlign.CENTER),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_AROUND,
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                     ),
-                    bgcolor="#0E0E55",
+                    bgcolor="#263A6D",
                     border_radius=3,
                     padding=3,
                     margin=3,
@@ -137,7 +139,8 @@ def main(page: ft.Page):
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             alignment=ft.alignment.top_center,
-            bgcolor="#021433",
+            blur=ft.Blur(sigma_x=10, sigma_y=10, tile_mode=ft.BlurTileMode.MIRROR),
+            bgcolor="#0E3155",
             margin=1,
             padding=5,
             border_radius=5,
@@ -168,7 +171,7 @@ def main(page: ft.Page):
         def validacao_de_campo(e):
             if campo_email.value and campo_senha.value:
                 
-                page.snack_bar = ft.SnackBar(content=ft.Text("Login Realizado com sucesso!", color="#f0f0fc"),
+                page.snack_bar = ft.SnackBar(content=ft.Text("Login Realizado com sucesso!", color="#dedee7"),
                 bgcolor="green",
                 duration=1000
                 )
@@ -184,43 +187,59 @@ def main(page: ft.Page):
                 page.snack_bar.open = True
                 page.update ()
 
-        campo_email = ft.TextField(label="Insira seu nome de usuario", 
-            label_style=ft.TextStyle(size=10),
+        campo_email = ft.TextField(hint_text="Insira seu nome de usuario", 
+            hint_style=ft.TextStyle(size=10),
+            text_align=ft.TextAlign.LEFT,
             bgcolor="#f0f0fc",
-            width=200,
-            height=38    
+            width=225,
+            height=38 ,
+            border_radius=ft.border_radius.all(20),
+            border_color="#f0f0fc"
         )
         
-        campo_senha = ft.TextField(label="Insira sua senha",
+        campo_senha = ft.TextField(
+            hint_text="Insira sua senha",
+            text_align=ft.TextAlign.LEFT,
             password=True,
             can_reveal_password=True,
             bgcolor="#f0f0fc", 
-            label_style=ft.TextStyle(size=10),
-            width=200,
-            height=38
+            hint_style=ft.TextStyle(size=10),
+            width=225,
+            height=38,
+            border_radius=ft.border_radius.all(20),
+            border_color="#f0f0fc"
         )
         painel_login = ft.Container(
             content= ft.Column(
                 controls=[
 
-                    ft.Text("Login", 
+                    ft.Text("MonitorRFID", 
                     size=30, 
                     weight="bold", 
-                    color="#f0f0fc"),
+                    color="#020230"),
+
+                    ft.Container(height=15),
 
                     ft.Image(
                         src="assets/icons/logo.png",
-                        width=60,
-                        height=60,
+                        width=65,
+                        height=65,
                         fit =ft.ImageFit.CONTAIN
                     ),
-                    ft.Container( height=15),
+
+                    ft.Container( height=20),
+
                     campo_email,
                     campo_senha,
-                    ft.Container( height=15),
+
+                    ft.Container( height=10),
+
                     ft.ElevatedButton(
                         text="Fazer Login",
                         on_click=validacao_de_campo,
+                        bgcolor="#f0f0fc",
+                        width=150,
+                        height=35
                     )
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -228,10 +247,11 @@ def main(page: ft.Page):
                 spacing=10
             ),
             width=300,
-            height= 360,
+            height= 380,
             padding=30,
             border_radius=12,
-            bgcolor="#0F3372",
+            blur=ft.Blur(sigma_x=10, sigma_y=10, tile_mode=ft.BlurTileMode.MIRROR),
+            bgcolor="#43F0FDFF",
             alignment=ft.alignment.center
         )
         
