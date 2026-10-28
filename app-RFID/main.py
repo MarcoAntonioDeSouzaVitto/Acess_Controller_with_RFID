@@ -117,7 +117,7 @@ def main(page: ft.Page):
                         controls=[
                             ft.Text(uid, color="#dedee7", expand=1, size=12, text_align=ft.TextAlign.CENTER),
                             ft.Text(status, color=cor_status, expand=2, size=13, text_align=ft.TextAlign.CENTER),
-                            ft.Text(dth, color="#dedee7", expand=1, size=13, text_align=ft.TextAlign.CENTER),
+                            ft.Text(dth, color="#dedee7", expand=1, size=12, text_align=ft.TextAlign.CENTER),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_AROUND,
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -171,7 +171,7 @@ def main(page: ft.Page):
         def validacao_de_campo(e):
             if campo_email.value and campo_senha.value:
                 
-                page.snack_bar = ft.SnackBar(content=ft.Text("Login Realizado com sucesso!", color="#dedee7"),
+                page.snack_bar = ft.SnackBar(content=ft.Text("Login realizado com sucesso!", color="#dedee7"),
                 bgcolor="green",
                 duration=1000
                 )
@@ -192,18 +192,22 @@ def main(page: ft.Page):
             text_align=ft.TextAlign.LEFT,
             bgcolor="#f0f0fc",
             width=225,
+            cursor_height=20,
             height=38 ,
             border_radius=ft.border_radius.all(20),
-            border_color="#f0f0fc"
+            border_color="#f0f0fc",
+            color="#090909"
         )
         
         campo_senha = ft.TextField(
             hint_text="Insira sua senha",
             text_align=ft.TextAlign.LEFT,
+            color="#090909",
             password=True,
             can_reveal_password=True,
             bgcolor="#f0f0fc", 
             hint_style=ft.TextStyle(size=10),
+            cursor_height=20,
             width=225,
             height=38,
             border_radius=ft.border_radius.all(20),
@@ -221,10 +225,10 @@ def main(page: ft.Page):
                     ft.Container(height=15),
 
                     ft.Image(
-                        src="assets/icons/logo.png",
+                        src="assets/icons/logo_trans.png",
                         width=65,
-                        height=65,
-                        fit =ft.ImageFit.CONTAIN
+                        height=65
+                       
                     ),
 
                     ft.Container( height=20),
@@ -238,6 +242,7 @@ def main(page: ft.Page):
                         text="Fazer Login",
                         on_click=validacao_de_campo,
                         bgcolor="#f0f0fc",
+                        color="#030345",
                         width=150,
                         height=35
                     )
@@ -247,7 +252,7 @@ def main(page: ft.Page):
                 spacing=10
             ),
             width=300,
-            height= 380,
+            height= 400,
             padding=30,
             border_radius=12,
             blur=ft.Blur(sigma_x=10, sigma_y=10, tile_mode=ft.BlurTileMode.MIRROR),
