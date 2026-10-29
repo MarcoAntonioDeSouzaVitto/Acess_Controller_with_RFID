@@ -7,13 +7,10 @@ DIRETORIO_RAIZ = Path("./app-RFID")
 
 # Estrutura de pastas e arquivos da imagem
 pastas_e_arquivos = [
-    ".vscode/",
     "assets/icons/",
     "assets/icons/logo_trans.png",
     "assets/icons/logo.png",
-    "flet.toml",
-    "main.py",
-    "requirements.txt"
+    "main.py"
 ]
 
 def criar_ambiente_completo(raiz: Path, itens):
