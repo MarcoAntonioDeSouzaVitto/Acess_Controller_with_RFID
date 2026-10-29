@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #13161F;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-card {
+            background-color: #313541;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            width: 350px;
+            height: 500px;
+            text-align: center;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        .login-card h2 {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #F19D01;
+            border-radius: 12px;
+            background-color: #181825;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #F19D01;
+        }
+
+        #usuario {
+            margin-top: 90px;
+            margin-bottom: 12px;
+        }
+
+        #senha {
+            margin-bottom: 45px;
+        }
+
+        .btn-login {
+            width: 200px;
+            padding: 12px;
+            background-color: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background-color: #144870;
+        }
+
+        #mensagem {
+            margin-top: 25px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Acesso ao Sistema</h2>
+
+        <input type="text" id="usuario" class="input-field" placeholder="Digite o ID">
+        <input type="password" id="senha" class="input-field" placeholder="Digite a senha">
+
+        <button class="btn-login" onclick="validarLogin()">Entrar</button>
+
+        <p id="mensagem"></p>
+    </div>
+
+    <script>
+        function validarLogin() {
+            var usuarioDigitado = document.getElementById("usuario").value;
+            var senhaDigitada = document.getElementById("senha").value;
+            var elementoMensagem = document.getElementById("mensagem");
+
+            if (usuarioDigitado === "admin" && senhaDigitada === "1234") {
+                elementoMensagem.style.color = "#4CAF50";
+                elementoMensagem.textContent = "Login efetuado com sucesso!";
+                setTimeout(function(){
+                    window.location.href = "second_page.html";
+                }, 1000);
+            } else {
+                elementoMensagem.style.color = "#f44336";
+                elementoMensagem.textContent = "Usuário ou senha incorretos!";
+            }
+        }
+    </script>
+
+</body>
+</html>
