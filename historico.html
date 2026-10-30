@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico</title>
+    
+    <style>
+        body {
+            background-color: #13161F;
+            color: white;
+            font-family: Arial, sans-serif; 
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+        nav {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+            justify-content: flex-start;
+            width: 200px;
+            min-height: 100vh;
+            background-color: #1C1F28;
+            padding: 20px;
+            box-sizing: border-box;
+            padding-top: 10vh;
+        }
+        nav a{
+            color: #565962;
+            padding: 12px;
+            text-decoration: none;
+            background-color: #1C1F28;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        nav a:hover{
+            background-color:#2d303b;
+            color: white;
+        }
+        .conteudo-principal {
+            flex-grow: 1; 
+            padding: 20px;
+        }
+        h1{
+            color: white;
+            font-size: 24px;
+            text-align: left;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="second_page.html">🖥️ Painel</a>
+        <a href="historico.html">🕒 Histórico</a>
+        <a href="controle.html">🔒 Controle</a>
+    </nav>
+    <h1 class="conteudo-principal">
+        Histórico de Acesso & Relatórios
+    </h1>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>UID</th>
+                    <th>STATUS</th>
+                    <th>DATA / HORA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AB AB AB AB</td>
+                    <td>ACESSO NULO</td>
+                    <td>00/00/0000</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <script> </script>
+
+</body>
+</html>
