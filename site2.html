@@ -127,8 +127,8 @@
 </head>
 <body>
     <nav>
-        <a href="second_page.html">🖥️ Painel</a>
-        <a href="historico.html">🕒 Histórico</a>
+        <a href="second_page">🖥️ Painel</a>
+        <a href="historico">🕒 Histórico</a>
         <a href="controle.html">🔒 Controle</a>
     </nav>
     <main>
@@ -190,19 +190,45 @@
             statusAcesso.textContent = foiLiberado ? "ACESSO LIBERADO" : "ACESSO RECUSADO";
             statusUid.textContent = `UID do cartão: ${uid}`;
             statusData.textContent = data;
+
             const linhanova = document.createElement("tr");  
-            linhanova.innerHTML = `
-                <td>${uid}</td>
-                <td class="${foiLiberado ? "liberado" : "negado"}">${foiLiberado ? "Liberado" : "Negado"}</td>
-                <td>${data}</td>
-            `;
+            const colunaUID = document.createElement("td");
+            colunaUID.textContent = uid;
+            const colunaSTATUS = document.createElement("td");
+            colunaSTATUS.textContent = foiLiberado ? "Liberado" : "Negado";
+            colunaSTATUS.className = foiLiberado ? "liberado" : "negado";
+            
+            const colunaDATA = document.createElement("td");
+            colunaDATA.textContent = data;
+
+            linhanova.append(colunaUID, colunaSTATUS, colunaDATA);
             historico.prepend(linhanova);
-            if (historico.children.length >5){
-                historico.lastElementChild.remove()
+            if (historico.children.length>5){
+                historico.lastElementChild.remove();
             }
         }
+        let ultimoId = 0;
 
-        
+
+        async function atualizar_user() {
+            try{
+                const respostaFlask = await fetch(`/api/registros?ultimo_id=${ultimoId}`);
+
+                if (!respostaFlask.ok){
+                    throw new Error("Erro ao buscar users");
+                }
+                const registros = await respostaFlask.json();
+                registros.forEach(registro => {
+                    adicionarAcesso(registro.uid,registro.acesso,registro.data_hora);
+                    ultimoId = registro.id;
+                });
+
+            }catch(erro){
+                console.error("Erro: ",erro);
+            }
+        }
+        atualizar_user();
+        setInterval(atualizar_user,2000);
     </script>
     
 </body>
