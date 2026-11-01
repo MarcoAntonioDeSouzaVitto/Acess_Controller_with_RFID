@@ -89,7 +89,7 @@
 
         <button class="btn-login" onclick="validarLogin()">Entrar</button>
 
-        <p id="mensagem"></p>
+        <p id="mensagem"></p>   
     </div>
 
     <script>
@@ -102,7 +102,7 @@
                 elementoMensagem.style.color = "#4CAF50";
                 elementoMensagem.textContent = "Login efetuado com sucesso!";
                 setTimeout(function(){
-                    window.location.href = "second_page.html";
+                    window.location.href = "second_page";
                 }, 1000);
             } else {
                 elementoMensagem.style.color = "#f44336";
