@@ -1,0 +1,5 @@
+flet
+requests
+python-socketio[client]
+websocket-client
+time

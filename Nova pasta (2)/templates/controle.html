@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle</title>
+    <style>
+        body{
+            background-color: #13161F;
+            color: white;
+            font-family: Arial, sans-serif; 
+            display: flex;
+            height: 100vh;
+            margin: 0; 
+        }
+        main{
+            flex: 1;
+            position: relative;
+        }
+        nav{
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+            justify-content: flex-start;
+            width: 200px;
+            min-height: 100vh;
+            background-color:#1C1F28;
+            padding: 20px;
+            box-sizing: border-box;
+            padding-top: 10vh;
+        }
+        nav a{
+            color: #565962;
+            padding: 12px;
+            text-decoration: none;
+            background-color: #1C1F28;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        nav a:hover{
+            background-color:#2d303b;
+            color: white;
+        }
+        h1{
+            color: white;
+            font-size: 24px;
+            text-align:left;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            background-color: #1C202B;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            border-radius: 15px;
+            margin-top: 8%;
+        }
+        thead{
+            background-color: #20283D;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #1F232E;
+        }
+        th{
+            padding: 10px 18px;
+            text-align: left;
+            color: #AAB3C5;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        td {
+            padding: 8px 18px;
+            color: white;
+            border-bottom: 1px solid #303746;
+            font-size: 13px;
+        }
+        tbody tr:hover {
+            background-color: #303B4F;
+            transition: 0.2s;
+        }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .paginas_regisUser{
+            position: fixed;
+            padding: 20px;
+            left: 38.5%;
+            top: 79vh;
+        }
+        .paginas_regisUser button{
+            background-color: #2273DD;
+            border: 1px solid #303746;
+            color:whitesmoke;
+            border-radius: 10px;
+            width: 20vh;
+            height: 6vh;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 0 16px;
+            cursor: pointer;
+        }
+        .paginas_regisUser button:hover{
+            background-color: #16437e;
+        }
+        .paginas_regisUser button:disabled{
+            background-color: #48515c;
+        }
+        .acoes_usuarios button{
+            position: fixed;
+            padding: 20px;
+            left: 80%;
+            top: 8vh;
+            background-color: #2273DD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            width: 28vh;
+            height: 5vh;
+        }
+        .acoes_usuarios button:hover{
+            background-color: #16437e;  
+        }
+        #formularioUsuario{
+            position: fixed;
+            padding: 20px;
+            left: 38%;
+            top: 9vh;
+            
+        }
+        #formularioUsuario{
+            background-color: #1C202B;
+            border: 1px solid #303746;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        th:nth-child(4), td:nth-child(4){
+            width: 90px;
+            padding: 5px;
+        }
+        .botao_remove {
+            background-color: #3E323E;
+            color: #B1625F;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao_remove:hover {
+            background-color: #80393c;
+            color:rgb(255, 255, 255)
+        }
+        .botaosair{
+            position: fixed;
+            top: 90vh;
+            width: 138px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/second_page">🖥️ Painel</a>
+        <a href="/historico">🕒 Histórico</a>
+        <a href="/controle">🔒 Controle</a>
+        <a class = "botaosair" href="/first_page">🚪 Sair</a>
+    </nav>
+    <main>
+        <h1>Controle de Usuários</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOME</th>
+                    <th>UID</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id = "usuarios-cadastrados">
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{usuario[0]}}</td>
+                    <td>{{usuario[1]}}</td>
+                    <td>{{usuario[2]}}</td>
+                    <td>
+                        <form action="/remover_usuario/{{usuario[0]}}"method="POST">
+                            <button class="botao_remove" type="submit">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+
+        <div class="paginas_regisUser">
+            <button id = "anterior" onclick="mudarPagina(-1)">Página Anterior</button>
+            <span id="pagina-atual">Página 1</span>
+            <button id = "proximo" onclick="mudarPagina(1)">Próxima Página</button>
+        </div>
+
+
+        <div class="acoes_usuarios">
+            <button onclick="abrirFormulario()">+👤 Novo Usuário</button>
+        </div>
+
+        <div id="formularioUsuario" style="display: none;">
+
+            <form action="/adicionar_usuario" method="POST">
+                <input type="text" name="nome" placeholder="NOME" required>
+                <input type="password" name="senha" placeholder="SENHA" required>
+                <input type="text" name="uiduser" placeholder="UID DO CARTÃO RFID" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+
+    </main>
+    <script>
+
+        function abrirFormulario() {
+            const formulario = document.getElementById("formularioUsuario");
+                if (formulario.style.display === "none") {
+                    formulario.style.display = "block";
+                } else {
+                    formulario.style.display = "none";
+                }
+        }
+
+        let paginaAtual = 1;
+        let paginaTotal = 1;
+
+        async function carregarUsuario() {
+            const resposta = await fetch(`/api/controle?pagina=${paginaAtual}`);
+            const dados = await resposta.json();
+            paginaTotal = dados.total_paginas;
+            const tbody = document.getElementById('usuarios-cadastrados');
+            tbody.innerHTML = '';
+            dados.registros.forEach(item => {
+                const linha = document.createElement('tr');
+                linha.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.nome}</td>
+                    <td>${item.uid}</td>`;
+                const colunaAcoes=document.createElement("td");
+                const formulario = document.createElement('form');
+                formulario.action = `/remover_usuario/${item.id}`;
+                formulario.method = "POST";
+                
+                const botao = document.createElement('button');
+                botao.type = "submit";
+                botao.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"/>
+                        <path d="M8 6V4h8v2"/>
+                        <path d="M19 6l-1 14H6L5 6"/>
+                        <path d="M10 11v6M14 11v6"/>
+                    </svg>
+                `;
+                botao.classList.add("botao_remove");
+                formulario.appendChild(botao);
+                colunaAcoes.appendChild(formulario);
+                linha.appendChild(colunaAcoes);
+                tbody.appendChild(linha)
+            });
+        
+        document.getElementById('pagina-atual').textContent=`Página ${paginaAtual} de ${paginaTotal}`;
+        document.getElementById('anterior').disabled = paginaAtual ===1;
+        document.getElementById('proximo').disabled = paginaAtual === paginaTotal;
+        }
+        function mudarPagina(direcao) {
+
+            const novaPagina = paginaAtual + direcao;
+
+            if (novaPagina < 1 || novaPagina > paginaTotal) {
+                return;
+            }
+
+            paginaAtual = novaPagina;
+
+            carregarUsuario();
+        }
+        carregarUsuario();
+        setInterval(carregarUsuario, 2000);
+    </script>
+
+</body>
+</html>
