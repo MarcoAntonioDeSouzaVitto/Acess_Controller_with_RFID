@@ -7,17 +7,19 @@
 #define RST_PIN 22
 #define LEDVERDE_PIN 4
 #define LEDVERMELHO_PIN 5
+#define buzzer1 15
+#define buzzer2 16
 
-const char* ssid = "rede";
-const char* senha = "senha";
+const char* ssid = "FIEP-CONV";
+const char* senha = "resultadoindustria@2026";
 
 // Controle do Heartbeat
 unsigned long ultimoHeartbeat = 0;
 const unsigned long intervaloHeartbeat = 5000;
 
 // Endereços do Flask
-const char* servidor = "http://192.168.1.9:5000/api/leitura";
-const char* servidorStatus = "http://192.168.1.9:5000/api/esp/status";
+const char* servidor = "http://10.196.48.233:5000/api/leitura";
+const char* servidorStatus = "http://10.196.48.233:5000/api/esp/status";
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
@@ -36,11 +38,51 @@ void enviarHeartbeat() {
   }
 }
 
+void toneDual(unsigned int freq, unsigned long ms) {
+  unsigned long meioPeriodo = 500000UL / freq;
+  unsigned long inicio = millis();
+
+  while (millis() - inicio < ms) {
+    digitalWrite(buzzer1, HIGH);
+    digitalWrite(buzzer2, HIGH);
+    delayMicroseconds(meioPeriodo);
+
+    digitalWrite(buzzer1, LOW);
+    digitalWrite(buzzer2, LOW);
+    delayMicroseconds(meioPeriodo);
+  }
+
+  digitalWrite(buzzer1, LOW);
+  digitalWrite(buzzer2, LOW);
+}
+
+// ===== SOM DE PINTINHO: ACESSO PERMITIDO =====
+void somPermitido() {
+  toneDual(2200, 100);
+  delay(40);
+
+  toneDual(2800, 120);
+  delay(40);
+
+  toneDual(2200, 100);
+  delay(30);
+
+  toneDual(3000, 220);
+}
+
+// ===== SOM RAPIDO: ACESSO NEGADO =====
+void somNegado() {
+  toneDual(3000, 100);
+  delay(50);
+
+  toneDual(1800, 250);
+}
 
 void setup() {
 
   Serial.begin(115200);
-
+  pinMode(buzzer1, OUTPUT);
+  pinMode(buzzer2, OUTPUT);
   pinMode(LEDVERDE_PIN, OUTPUT);
   digitalWrite(LEDVERDE_PIN, LOW);
 
@@ -131,12 +173,15 @@ void loop() {
         digitalWrite(LEDVERDE_PIN, HIGH);
         delay(1000);
         digitalWrite(LEDVERDE_PIN, LOW);
+        somPermitido();
+        
       } else {
         Serial.println("ACESSO NEGADO");
         digitalWrite(LEDVERDE_PIN, LOW);
         digitalWrite(LEDVERMELHO_PIN, HIGH);
         delay(1000);
         digitalWrite(LEDVERMELHO_PIN, LOW);
+        somNegado();
       }
     } else {
       Serial.print("Erro HTTP: ");
