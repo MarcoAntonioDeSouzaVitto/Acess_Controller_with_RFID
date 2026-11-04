@@ -174,14 +174,40 @@
             top: 90vh;
             width: 138px;
         }
+        .label{
+            display: flex;
+            flex-direction: row;
+            
+        }
+        
+        .estilo{
+            padding: 5px;
+            margin: 13px;
+            outline: none;
+            border: none;
+            border-radius: 9px;
+            
+        }
+        .btn_estilo{
+            background-color: #2273DD;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: none;
+            border: none;
+        }
+        .btn_estilo:hover{
+            background-color: #16437e;
+        }
+        
+        
     </style>
 </head>
 <body>
     <nav>
-        <a href="/second_page">🖥️ Painel</a>
-        <a href="/historico">🕒 Histórico</a>
-        <a href="/controle">🔒 Controle</a>
-        <a class = "botaosair" href="/first_page">🚪 Sair</a>
+        <a href="second_page">🖥️ Painel</a>
+        <a href="historico">🕒 Histórico</a>
+        <a href="controle">🔒 Controle</a>
+        <a class = "botaosair" href="first_page">🚪 Sair</a>
     </nav>
     <main>
         <h1>Controle de Usuários</h1>
@@ -223,11 +249,11 @@
 
         <div id="formularioUsuario" style="display: none;">
 
-            <form action="/adicionar_usuario" method="POST">
-                <input type="text" name="nome" placeholder="NOME" required>
-                <input type="password" name="senha" placeholder="SENHA" required>
-                <input type="text" name="uiduser" placeholder="UID DO CARTÃO RFID" required>
-                <button type="submit">Cadastrar</button>
+            <form action="/adicionar_usuario" method="POST" ">
+                <input class=estilo type="text" name="nome" placeholder="NOME" required>
+                <input class=estilo type="text" name="senha" placeholder="SENHA" required>
+                <input class=estilo type="text" name="uiduser" placeholder="UID" required>
+                <button class=btn_estilo type="submit">Cadastrar</button>
             </form>
         </div>
 
