@@ -18,12 +18,15 @@
         }
 
         .login-card {
+            display: flex;
+            flex-direction: column;
             background-color: #313541;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             width: 350px;
             height: 500px;
+            align-items: center;
             text-align: center;
             color: #ffffff;
             box-sizing: border-box;
@@ -77,18 +80,15 @@
             margin-top: 25px;
             font-size: 14px;
         }
-        nav a{
-            left: 40.85%;
-            top: 76vh;
-            position: fixed;
+        .login-card a{
             color: #565962;
-            padding: 12px;
             text-decoration: none;
+            padding: 20px;
             background-color: #313541;
             font-size: 18px;
             font-family: 'Noto Sans', sans-serif;
         }
-        nav a:hover{
+         a:hover{
             text-decoration: underline;
         }
         p{
@@ -99,16 +99,12 @@
     </style>
 </head>
 <body>
-    <nav>
-        <a href="/visitante">Entrar como Convidado(a)</a>
-    </nav>
-
     <div class="login-card">
         <h2>Acesso ao Sistema</h2>
 
         <input type="text" id="usuario" class="input-field" placeholder="Digite o ID">
         <input type="password" id="senha" class="input-field" placeholder="Digite a senha">
-
+        <a href="visitante.html">Entrar como Convidado(a)</a>
         <button class="btn-login" onclick="validarLogin()">Entrar</button>
 
         <p id="mensagem"></p>   
@@ -136,7 +132,7 @@
                 setTimeout(function(){
                     // CORREÇÃO: Redireciona dependendo de quem logou
                     if (dadosSessao.papel === "admin") {
-                        window.location.href = "/controle";
+                        window.location.href = "/second_page";
                     } else {
                         window.location.href = "/second_page";
                     }
