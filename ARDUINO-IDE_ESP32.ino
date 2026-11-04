@@ -1,4 +1,3 @@
-
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <SPI.h>
@@ -9,15 +8,37 @@
 #define LEDVERDE_PIN 4
 #define LEDVERMELHO_PIN 5
 
-const char* ssid = "VITTO 71";
-const char* senha = "Suely1974#";
+const char* ssid = "rede";
+const char* senha = "senha";
 
-// IP do computador que executa o Flask
+// Controle do Heartbeat
+unsigned long ultimoHeartbeat = 0;
+const unsigned long intervaloHeartbeat = 5000;
+
+// Endereços do Flask
 const char* servidor = "http://192.168.1.9:5000/api/leitura";
+const char* servidorStatus = "http://192.168.1.9:5000/api/esp/status";
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
+
+// FUNÇÃO HEARTBEAT
+void enviarHeartbeat() {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(servidorStatus);
+    http.addHeader("Content-Type", "application/json");
+    http.setTimeout(2000);
+    int resposta = http.POST("{}");
+    http.end();
+  } else {
+    Serial.println("Wi-Fi desconectado!");
+  }
+}
+
+
 void setup() {
+
   Serial.begin(115200);
 
   pinMode(LEDVERDE_PIN, OUTPUT);
@@ -44,13 +65,22 @@ void setup() {
   Serial.println("Aproxime seu cartao RFID...");
 }
 
+
 void loop() {
 
+  // HEARTBEAT: envia um sinal a cada 5 segundos
+  if (millis() - ultimoHeartbeat >= intervaloHeartbeat) {
+
+    ultimoHeartbeat = millis();
+
+    enviarHeartbeat();
+  }
+
+  // VERIFICAÇÃO DO RFID
   if (!mfrc522.PICC_IsNewCardPresent()) {
     delay(50);
     return;
   }
-
   if (!mfrc522.PICC_ReadCardSerial()) {
     delay(50);
     return;
@@ -60,19 +90,19 @@ void loop() {
   String uid = "";
 
   for (byte i = 0; i < mfrc522.uid.size; i++) {
+
     if (i > 0) uid += " ";
 
     if (mfrc522.uid.uidByte[i] < 0x10) {
       uid += "0";
     }
-
     uid += String(mfrc522.uid.uidByte[i], HEX);
   }
 
   uid.toUpperCase();
 
   Serial.println("UID: " + uid);
-
+  // ENVIO DO UID PARA O FLASK
   if (WiFi.status() == WL_CONNECTED) {
 
     HTTPClient http;
@@ -86,19 +116,21 @@ void loop() {
     int resposta = http.POST(dados);
 
     if (resposta > 0) {
+
       String resultado = http.getString();
 
       Serial.println("Resposta do Flask:");
       Serial.println(resultado);
 
-      // Verifica o campo "acesso" retornado pelo Flask
-      if (resultado.indexOf("\"acesso\": \"Liberado\"") >= 0) {
+      // CORREÇÃO: procura só a palavra, independente de espaços no JSON
+      if (resultado.indexOf("Liberado") >= 0) {
+
         Serial.println("ACESSO LIBERADO");
+
         digitalWrite(LEDVERMELHO_PIN, LOW);
         digitalWrite(LEDVERDE_PIN, HIGH);
         delay(1000);
         digitalWrite(LEDVERDE_PIN, LOW);
-
       } else {
         Serial.println("ACESSO NEGADO");
         digitalWrite(LEDVERDE_PIN, LOW);
@@ -106,20 +138,16 @@ void loop() {
         delay(1000);
         digitalWrite(LEDVERMELHO_PIN, LOW);
       }
-
     } else {
       Serial.print("Erro HTTP: ");
       Serial.println(http.errorToString(resposta));
     }
-
     http.end();
-
   } else {
+
     Serial.println("Wi-Fi desconectado!");
   }
-
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
-
   delay(300);
 }
