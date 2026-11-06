@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, session
 import sqlite3
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import time
 import os
 import secrets
@@ -12,9 +12,23 @@ DISCOVERY_PORT = 5001
 HTTP_PORT = 5000
 DISCOVERY_REQUEST = b"MONITORRFID_DISCOVER"
 
+# Fuso horario do Brasil (Brasilia). O servidor do Render usa UTC, entao
+# datetime.now() sozinho daria 3 horas a frente. Se o Python nao encontrar o
+# banco de fusos (ex.: Windows sem o pacote tzdata), usa UTC-3 fixo, que e
+# equivalente porque o Brasil nao tem mais horario de verao.
+try:
+    from zoneinfo import ZoneInfo
+    FUSO_BRASIL = ZoneInfo("America/Sao_Paulo")
+except Exception:
+    FUSO_BRASIL = timezone(timedelta(hours=-3))
+
+def agora_brasil():
+    """Data e hora atuais no Brasil, no mesmo formato que o banco ja usa."""
+    return datetime.now(FUSO_BRASIL).strftime('%Y-%m-%d %H:%M:%S')
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode="threading")
 
 databd = Path(__file__).resolve().parent / "database_iot.db"
 
@@ -227,7 +241,7 @@ def itens_lidos():
         acesso = "Liberado"
     else:
         acesso = "Negado"
-    datahora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    datahora = agora_brasil()
     cursor.execute("INSERT INTO registros(uid, acesso, data_hora) VALUES(?,?,?)",(uid,acesso,datahora))
     novo_id = cursor.lastrowid
     conexao.commit()
@@ -327,7 +341,7 @@ def ao_conectar(auth=None):
 def liberar_acesso(dados=None):
     """Botão 'Liberar acesso' do app Flet."""
     uid = "MANUAL-ADMIN"
-    datahora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    datahora = agora_brasil()
     conexao = conectar_banco()
     cursor = conexao.cursor()
     cursor.execute("INSERT INTO registros(uid, acesso, data_hora) VALUES(?,?,?)",(uid,"Liberado",datahora))
