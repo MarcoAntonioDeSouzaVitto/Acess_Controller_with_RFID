@@ -143,13 +143,22 @@ def sessao_logada(auth=None):
             return None
     return sessao
 
+@app.before_request
+def proteger_controle():
+    if request.path.startswith(("/controle", "/api/controle", "/adicionar_usuario", "/remover_usuario")):
+        sessao = sessao_logada()
+        if not sessao or sessao["papel"] != "admin":
+            if request.path.startswith("/api/"):
+                return jsonify({"erro": "sem permissão"}), 403
+            return redirect("/second_page" if sessao else "/first_page")
+        
 def filtro_visibilidade(sessao):
     """Condição SQL (sobre a tabela registros) do que esta sessão pode ver."""
     if sessao["papel"] == "admin":
         return "1=1", ()
     return ("(uid IN (?, ?) OR (lower(acesso) = 'negado' AND uid NOT IN (SELECT uid FROM usuarios)))",
             (sessao["uid"], f"MANUAL-{sessao['id']}"))
-  
+
 def ultimos_registros(sessao, limite=5):
     condicao, params = filtro_visibilidade(sessao)
     conexao = conectar_banco()
@@ -206,7 +215,9 @@ def controledados():
 @app.route("/visitante")
 def visitantelogin():
     return render_template("visitante.html")
+
 #=================================
+
 @app.route("/api/login", methods=["POST"])
 def login():
     """Usado pela first_page e pelo app Flet."""
@@ -227,7 +238,9 @@ def login():
         "usuario": sessao["nome"],
         "papel": sessao["papel"]
     })
+
 #=================================
+
 @app.route("/api/registros")
 def listar_registros():
     sessao = sessao_logada()
@@ -246,7 +259,9 @@ def listar_registros():
     conexao.close()
 
     return jsonify([dict(registro) for registro in registrosBanco])
+
 #=================================
+
 @app.route("/api/leitura", methods=['POST'])
 def itens_lidos():
     conexao = conectar_banco()
@@ -269,7 +284,9 @@ def itens_lidos():
     publicar({"id": novo_id, "uid": uid, "status": acesso, "data_hora": datahora},
              consulta[0]["id"] if consulta else None)
     return jsonify({"uid":uid, "acesso":acesso,"data_hora":datahora}),200
+
 #=================================
+
 registros_limite = 15
 @app.route("/api/historico")
 def historicogeral():
@@ -295,6 +312,7 @@ def historicogeral():
         "total_registros": total_registros
     })
 #=================================
+
 registrosUser_limite = 8
 @app.route("/api/controle")
 def usuariosRegistrados():
@@ -316,6 +334,7 @@ def usuariosRegistrados():
         "total_registros": total_registrosUSER
     })
 #=================================
+
 @app.route("/adicionar_usuario",methods=["POST"])
 def adicionar_usuario():
     nome = request.form["nome"]
@@ -328,6 +347,7 @@ def adicionar_usuario():
     conexao.close()
     return redirect("/controle")
 #=================================
+
 @app.route("/remover_usuario/<int:id>",methods=["POST"])
 def remover_usuario(id):
     conexao = conectar_banco()
@@ -339,6 +359,7 @@ def remover_usuario(id):
         del tokens_validos[t]
     return redirect("/controle")
 #=================================
+
 @app.route("/api/visitante")
 def listarParaVistiante():
     ultimo_id = request.args.get("ultimo_id", default=0,type=int)
@@ -348,7 +369,10 @@ def listarParaVistiante():
     registrosBanco = cursor.fetchall()
     conexao.close()
     return jsonify([dict(registro) for registro in registrosBanco])
+
 #=================================
+# SOCKET.IO (app Flet e second_page)
+
 @socketio.on("connect")
 def ao_conectar(auth=None):
     sessao = sessao_logada(auth)
@@ -379,6 +403,7 @@ def liberar_acesso(dados=None):
     conexao.commit()
     conexao.close()
     publicar({"id": novo_id, "uid": uid, "status": "Liberado", "data_hora": datahora}, sessao["id"])
+
 #=================================
 # DESCOBERTA NA REDE LOCAL (app Flet)
 
@@ -402,6 +427,7 @@ def descobrir_ip_local(destino="8.8.8.8"):
         pass
 
     return None
+
 
 def servidor_descoberta():
     """Responde a broadcasts UDP com o endereço do servidor HTTP."""
