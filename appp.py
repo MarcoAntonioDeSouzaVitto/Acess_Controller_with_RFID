@@ -395,7 +395,7 @@ def liberar_acesso(dados=None):
         emit("erro", "Não autorizado. Faça login novamente.")
         return
     uid = f"MANUAL-{sessao['id']}"
-    datahora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    datahora = agora_brasil()
     conexao = conectar_banco()
     cursor = conexao.cursor()
     cursor.execute("INSERT INTO registros(uid, acesso, data_hora) VALUES(?,?,?)",(uid,"Liberado",datahora))
