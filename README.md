@@ -8,7 +8,7 @@
 ### Links para acessar o projeto
 ###### link para o download do aplicativo Android
 &emsp; https://drive.google.com/drive/folders/1bA-IO7C_EfJSiK2Ab0PbNJ1MiCzZUId6?usp=sharing <br>
-###### Site do sistema, é ultilizado junto com o arduino
+###### servidor do sistema, é ultilizado junto com o arduino e aplicativo
 &emsp; https://html-esp32.onrender.com<br>
 &emsp;<br>conta de testes, o sistema é um <b>protótipo<b>
 <br>&emsp;admin<br>
