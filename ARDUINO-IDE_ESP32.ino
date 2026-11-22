@@ -17,8 +17,8 @@
 #define buzzer2 16
 
 // ---------- Wi-Fi ----------
-const char* ssid = "VITTO 71";
-const char* senha = "Suely1974#";
+const char* ssid = "nome da sua rede wifi";
+const char* senha = "senha da sua rede wifi";
 
 // ---------- Servidor no Render ----------
 // Sem "http://" antigo, sem IP e sem porta: agora e HTTPS (porta 443 automatica).
